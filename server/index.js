@@ -19,7 +19,6 @@ app.get('/inventory', (req, res) => {
 });
 
 app.post('/tray/:id', (req, res) => {
-  //console.log(req.params.id);
   addCropToInventory(req.params.id)
   .then((data) => {
     res.status(201).send(`updated Inventory`);

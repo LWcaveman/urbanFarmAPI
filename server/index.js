@@ -2,11 +2,31 @@ require('dotenv').config();
 const path = require('path')
 const express = require('express');
 const app = express();
+const { getAllCrops } = require('./controllers/crops_baseline.js'); 
+const { addCropToInventory, getInventory } = require('./controllers/tray_inventory.js'); 
+
 
 app.get('/crops', (req, res) => {
-  
-  res.send('Oh Ya a Backend Too')
-})
+  getAllCrops().then(data => {
+    res.status(200).send(data.rows);
+  });
+});
+
+app.get('/inventory', (req, res) => {
+  getInventory().then((data) => {
+    res.status(200).send(data.rows);
+  });
+});
+
+app.post('/tray/:id', (req, res) => {
+  //console.log(req.params.id);
+  addCropToInventory(req.params.id)
+  .then((data) => {
+    res.status(201).send(`updated Inventory`);
+  });
+});
+
+
 
 
 

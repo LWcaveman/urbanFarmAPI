@@ -3,8 +3,8 @@ const path = require('path')
 const express = require('express');
 const app = express();
 const { getAllCrops } = require('./controllers/crops_baseline.js'); 
-const { addCropToInventory, 
-        getInventory, 
+const { getHarvested, addHarvested, deleteHarvested } = require('./controllers/harvested.js'); 
+const { addCropToInventory, getInventory, 
         updateCropToInventory,
         deleteCropInventory  } = require('./controllers/tray_inventory.js'); 
 
@@ -22,6 +22,9 @@ app.get('/inventory', (req, res) => {
     res.status(200).send(data.rows);
   });
 });
+
+
+/* INVENTORY  */
 
 //the id here represents a crop id
 app.post('/tray/:id', (req, res) => {
@@ -46,6 +49,30 @@ app.delete(`/tray/:id`, (req, res) => {
   deleteCropInventory(req.params.id)
    .then((data) => {
     res.status(201).send(`updated Inventory`);
+  }).catch(err => console.log(err)); 
+});
+
+/* HARVESTED  */
+app.get(`/harvested`, (req, res) => {
+  getHarvested()
+  .then((data) => {
+    res.status(200).send(data.rows)
+  });
+});
+
+
+app.post(`/harvested`, (req, res) => {
+  addHarvested(req.body.cropId, req.body.cropName)
+  .then((data) => {
+    res.status(201).send(`Added ${req.body.cropName}`)
+  });
+});
+
+app.delete(`/harvested/:id`, (req, res) => {
+  console.log('Delete: ',req.params.id)
+  deleteHarvested(req.params.id)
+   .then((data) => {
+    res.status(204).send(`updated Inventory`);
   }).catch(err => console.log(err)); 
 });
 
